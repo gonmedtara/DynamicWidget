@@ -1,18 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-
+import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-
+import { WidgetContainerComponent } from './widget-container.component';
+import { WidgetDirective } from './widget.directive';
+import { WidgetService } from './widget.service';
+import { Widget25Component } from './widget-25.component';
+import { Widget50Component } from './widget-50.component';
 
 @NgModule({
+  imports: [BrowserModule],
   declarations: [
-    AppComponent
+    AppComponent,
+    WidgetContainerComponent,
+    Widget25Component,
+    Widget50Component,
+    WidgetDirective
   ],
-  imports: [
-    BrowserModule
-  ],
-  providers: [],
+  entryComponents: [Widget25Component, Widget50Component],
+  providers: [WidgetService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
