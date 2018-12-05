@@ -41,8 +41,7 @@ export class WidgetContainerComponent implements AfterViewInit {
       const componentRef = this.WidgetDirective.viewContainerRef.createComponent(
         componentFactory
       );
-      const widget: WidgetComponent = <WidgetComponent>componentRef.instance;
-      widget.data = this.widgetItem.widget;
+      (<WidgetComponent>componentRef.instance).data = this.widgetItem.widget;
     }, 1);
   }
 }
