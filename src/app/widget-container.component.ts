@@ -1,42 +1,48 @@
-import { Component, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  ComponentFactoryResolver,
+  Input
+} from '@angular/core';
 import { WidgetDirective } from './widget.directive';
-import { WidgetService } from './widget.service';
 import { WidgetItem } from './widget-item';
-
+import { Widget } from './widget';
+import { WidgetComponent } from './widget-component';
+import { WidgetComponents, WidgetModels } from './widgets-store';
 @Component({
   selector: 'app-widget-container',
   template: `
-    <h3>Widgets</h3>
     <ng-container appWidgetContainer></ng-container>
   `
 })
-export class WidgetContainerComponent implements AfterViewInit, OnDestroy {
+export class WidgetContainerComponent implements AfterViewInit {
   @ViewChild(WidgetDirective)
   private WidgetDirective: WidgetDirective;
+  @Input() widgetData: Widget;
+  widgetItem: WidgetItem;
 
-  widgetItems: WidgetItem[];
-  intervalId: any;
-  widgetIndex: any = -2;
-
-  constructor(private widgetService: WidgetService) {}
+  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
   ngAfterViewInit() {
-    this.widgetItems = this.widgetService.getAllWidgets();
-    this.startPostHighlights();
+    this.widgetItem = new WidgetItem(
+      WidgetComponents[`Widget${this.widgetData.size}Component`],
+      new WidgetModels[`Widget${this.widgetData.size}`](this.widgetData)
+    );
+    this.showWidget();
   }
 
-  startPostHighlights() {
-    this.intervalId = setInterval(() => {
-      this.widgetIndex =
-        this.widgetIndex === this.widgetItems.length ? 0 : this.widgetIndex + 1;
-      this.widgetService.loadComponent(
-        this.WidgetDirective.viewContainerRef,
-        this.widgetItems[this.widgetIndex]
+  showWidget() {
+    setTimeout(() => {
+      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+        this.widgetItem.component
       );
-    }, 2000);
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.intervalId);
+      this.WidgetDirective.viewContainerRef.clear();
+      const componentRef = this.WidgetDirective.viewContainerRef.createComponent(
+        componentFactory
+      );
+      const widget: WidgetComponent = <WidgetComponent>componentRef.instance;
+      widget.data = this.widgetItem.widget;
+    }, 1);
   }
 }

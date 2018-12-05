@@ -5,9 +5,9 @@ import { WidgetComponent } from './widget-component';
 @Component({
   template: `
     <div>
-      <h1>{{ data.title }}</h1>
-      <p>{{ data.description }}</p>
-      <a href="{{ data.link }}" target="_blank"></a>
+      <h1>{{ data?.title }}</h1>
+      <p>{{ data?.description }}</p>
+      <a href="{{ data?.link }}" target="_blank">{{ data?.link }}</a>
     </div>
   `
 })
